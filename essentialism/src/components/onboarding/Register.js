@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { SplashContainer, SplashTitle, SplashButton, ButtonLink } from "../main/Landing";
+import { LandingContainer, LandingTitle, LandingButton, ButtonLink } from "../main/Landing";
 import styled from "styled-components";
 import * as yup from "yup";
 import axios from "axios"
+import {Redirect} from "react-router-dom";
 
 export const StyledForm = styled.form`
     display: flex;
@@ -50,21 +51,21 @@ export const handleChange = (e, stateObj, setterCB) => {
     //validate();
 }
 
-export const validate = () => {
 
-}
+const Register = (props) => {
+    const [formState, setFormState] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        username: "",
+        password: ""
+    });
 
-const handleSubmit = (e, setterCB, formState) => {
+
+const handleSubmit = (e, setterCB) => {
     e.preventDefault();
 
-    axios
-    .post("https://essentialapi.herokuapp.com/auth/register", formState)
-    .then((res) => {
-        console.log(res)
-    })
-    .catch((err) => {
-        console.log(err)
-    })
+    userRegister();
 
     setterCB({
         firstName: "",
@@ -75,19 +76,21 @@ const handleSubmit = (e, setterCB, formState) => {
     });
 }
 
-const Register = () => {
-    
-    const [formState, setFormState] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        username: "",
-        password: ""
-    });
+    const userRegister = () => {
+        axios
+        .post("https://essentialapi.herokuapp.com/auth/register", formState)
+        .then((res) => {
+            console.log(res)
+            props.history.push('/login')
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+    }
 
     return (
-        <SplashContainer>
-            <SplashTitle>essentialism</SplashTitle>
+        <LandingContainer>
+            <LandingTitle>essentialism</LandingTitle>
             <StyledForm onSubmit={e => {
                 handleSubmit(e, setFormState, formState);
             }}>
@@ -147,9 +150,9 @@ const Register = () => {
                         }}
                     />
                 </StyledLabel>
-                <SplashButton>register</SplashButton>
+                <LandingButton>register</LandingButton>
             </StyledForm>
-        </SplashContainer>
+        </LandingContainer>
     );
 }
 
