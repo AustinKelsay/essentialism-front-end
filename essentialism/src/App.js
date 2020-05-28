@@ -6,7 +6,7 @@ import Landing from "./components/main/Landing";
 import Register from "./components/onboarding/Register";
 import Login from './components/onboarding/Login';
 import AreasOfFocus from "./components/main/AreasOfFocus";
-import OnboardingFocus from "./components/main/OnboardingFocus";
+import OnboardingFocus from "./components/onboarding/OnboardingFocus";
 import Header from "./components/main/Header";
 import styled from "styled-components";
 import Dashboard from "./components/main/Dashboard";
@@ -22,6 +22,8 @@ const MainContainer = styled.div`
   flex-direction: column;
   align-items: center;
 `;
+
+//this is the app
 
 function App() {
   return (
