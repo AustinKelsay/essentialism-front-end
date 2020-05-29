@@ -6,10 +6,11 @@ import Landing from "./components/main/Landing";
 import Register from "./components/onboarding/Register";
 import Login from './components/onboarding/Login';
 import AreasOfFocus from "./components/main/AreasOfFocus";
-import OnboardingFocus from "./components/onboarding/OnboardingFocus";
+import OnboardingFocus from "./components/onboarding/OnboardingFocus"
 import Header from "./components/main/Header";
 import styled from "styled-components";
 import Dashboard from "./components/main/Dashboard";
+import Initiatives from "./components/main/Initiatives";
 
 const AppContainer = styled.div`
   display: flex;
@@ -36,11 +37,20 @@ function App() {
         <Route exact path="/">
           <Landing />
         </Route>
+        <Route exact path="/selection">
+          <OnboardingFocus />
+        </Route>
+        <Route exact path="/initiatives">
+          <Initiatives />
+        </Route>
+        <Route exact path="/areas-of-focus">
+          <AreasOfFocus />
+        </Route>
 
         <Route path="/login" render ={(props) => <Login {...props} />} />
         <Route path="/register" render ={(props) => <Register {...props} />} />
+        <Route exact path="/focus" component={OnboardingFocus} />
         <PrivateRoute exact path="/users/:id/focus" component={AreasOfFocus} />
-        <PrivateRoute exact path="/focus" component={OnboardingFocus} />
       </MainContainer>
     </AppContainer>
   );
