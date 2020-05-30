@@ -3,6 +3,7 @@ import axios from "axios";
 import FocusTracker from "./FocusTracker";
 import styled from "styled-components";
 import {connect} from "react-redux";
+import { axiosWithAuth } from "../../utils/AxiosWithAuth";
 
 const FocusWrapper = styled.div`
     display: flex;
@@ -11,36 +12,52 @@ const FocusWrapper = styled.div`
 `
 
 const AreasOfFocus = (props) => {
-    const [userFocus, setUserFocus] = useState([])
+    const [userFocus, setUserFocus] = useState()
 
     useEffect(() => {
-        axios
+        axiosWithAuth()
         .get(`https://essentialapi.herokuapp.com/users/${props.userId}/focus`)
         .then((res) => {
             console.log(res)
+            dataParser(res.data)
         })
         .catch((err) => {
             console.log(err)
         })
     }, [])
 
+    const dataParser = (oldArray) => {
+        const newObj = {}
+
+        const newArray = oldArray.filter(current => {
+            if (!newObj[current.valuesId]){
+                newObj[current.valuesId] = true
+                return true
+            }
+            return false
+        })
+        setUserFocus(newArray);
+    }
+
     return(
         <div>
         <h1>Areas of Focus</h1>
-        <FocusWrapper>
-            <FocusTracker
-                focus="Focus 1"
-                type="area"
-            />
-            <FocusTracker
-                focus="Focus 2"
-                type="area"
-            />
-            <FocusTracker
-                focus="Focus 3"
-                type="area"
-            />
-        </FocusWrapper>
+        {userFocus ?
+            <FocusWrapper>
+                <FocusTracker
+                    focus={userFocus[0].name}
+                    type="area"
+                    />
+                <FocusTracker
+                    focus={userFocus[1].name}
+                    type="area"
+                    />
+                <FocusTracker
+                    focus={userFocus[2].name}
+                    type="area"
+                    />
+            </FocusWrapper>
+            : null}
         </div>
     );
 

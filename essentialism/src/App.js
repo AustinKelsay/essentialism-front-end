@@ -11,6 +11,7 @@ import Header from "./components/main/Header";
 import styled from "styled-components";
 import Dashboard from "./components/main/Dashboard";
 import Initiatives from "./components/main/Initiatives";
+import { connect } from "react-redux";
 
 const AppContainer = styled.div`
   display: flex;
@@ -26,14 +27,11 @@ const MainContainer = styled.div`
 
 //this is the app
 
-function App() {
+function App(props) {
   return (
     <AppContainer className="App">
-      <Dashboard />
+      {props.userId ? <Dashboard userId={props.userId}/> : null}
       <MainContainer>
-        <Route path="/">
-          <Header />
-        </Route>
         <Route exact path="/">
           <Landing />
         </Route>
@@ -41,19 +39,30 @@ function App() {
           <OnboardingFocus />
         </Route>
         <Route exact path="/initiatives">
+          <Header />
           <Initiatives />
-        </Route>
-        <Route exact path="/areas-of-focus">
-          <AreasOfFocus />
         </Route>
 
         <Route path="/login" render ={(props) => <Login {...props} />} />
         <Route path="/register" render ={(props) => <Register {...props} />} />
         <Route exact path="/focus" component={OnboardingFocus} />
-        <PrivateRoute exact path="/users/:id/focus" component={AreasOfFocus} />
+        <PrivateRoute exact path="/users/:id/focus">
+          <Header /> {/* need to pass in a user id prop here */}
+          <AreasOfFocus />
+        </PrivateRoute>
+        <PrivateRoute path="/users/:id/initiatives">
+          <Header />
+          <Initiatives userId={props.userId} /> {/* need to pass in a user id prop here */}
+        </PrivateRoute>
       </MainContainer>
     </AppContainer>
   );
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    userId: state.userId
+  }
+}
+
+export default connect(mapStateToProps, {})(App);
