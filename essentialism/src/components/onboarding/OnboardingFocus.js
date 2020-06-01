@@ -51,7 +51,8 @@ const CheckboxBody = styled.p`
 
 const OnboardingFocus = (props) => {
     const [focusState, setFocusState] = useState([]);
-    let checkCount = 0;
+    const USERID = window.localStorage.getItem("userId");
+    const [checkCount, setCheckCount] = useState(0);
 
     useEffect(() => {
         axios.get("https://essentialapi.herokuapp.com/values")
@@ -74,11 +75,10 @@ const OnboardingFocus = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (checkCount === 3){
-            handlePost(focusState)
-        }
-        else {
-            console.log("Please select exactly 3 areas of focus!")
+        if (checkCount === 3) {
+            handlePost(focusState);
+        } else {
+            window.alert("Please select exactly 3 areas of focus!");
         }
     }
 
@@ -86,7 +86,7 @@ const OnboardingFocus = (props) => {
         state.map((item) => {
             if (item.checked === true) {
                 axiosWithAuth()
-                .post(`/users/${props.userId}/focus`, {userId: props.userId, valuesId: item.id})
+                .post(`/users/${USERID}/focus`, {userId: USERID, valuesId: item.id})
                 .then((res) => {
                     console.log(res)
                 })
@@ -96,7 +96,7 @@ const OnboardingFocus = (props) => {
             }
             return null;
         })
-        props.history.push(`/users/${props.userId}/focus`)
+        props.history.push(`/users/${USERID}/focus`)
     }
 
     return (
@@ -113,10 +113,11 @@ const OnboardingFocus = (props) => {
                                 name={focus.name}
                                 value={focusState[i].checked}
                                 onChange={() => {
-                                    focusState[i].checked = !focusState[i].checked;
-                                    if (focusState[i].checked) checkCount++;
-                                    else checkCount--;
-                                    console.log(focusState);
+                                    const tempFocusState = [...focusState];
+                                    tempFocusState[i].checked = !tempFocusState[i].checked;
+                                    setFocusState(tempFocusState);
+                                    if (focusState[i].checked) setCheckCount(checkCount + 1);
+                                    else setCheckCount(checkCount - 1);
                                 }}
                             />
                         </CheckboxLabel>

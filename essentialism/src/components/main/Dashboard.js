@@ -26,12 +26,15 @@ const DashboardHeader = styled.div`
     height: auto;
 `;
 
-const Dashboard = ({userId}) => {
-    const [userFocus, setUserFocus] = useState();
+
+const Dashboard = (props) => {
+    const [userFocus, setUserFocus] = useState([]);
+    const [completed, setCompleted] = useState([]);
+    const USERID = window.localStorage.getItem("userId");
 
     useEffect(() => {
         axiosWithAuth()
-        .get(`https://essentialapi.herokuapp.com/users/${userId}/focus`)
+        .get(`/users/${USERID}/focus`)
         .then((res) => {
             console.log(res)
             setUserFocus(res.data)
@@ -41,16 +44,29 @@ const Dashboard = ({userId}) => {
         })
     }, [])
 
+    useEffect(() => {
+        if (userFocus && userFocus.length) {
+            userFocus.map((focus) => {
+                const completedFocus = window.localStorage.getItem(`${focus.name}`);
+                if(completedFocus) {
+                    setCompleted([...completed, focus.name])
+                }
+            })
+        }
+    }, [userFocus])
+
     return(
+        userFocus.length ? 
         <DashboardContainer>
-            <DashboardHeader>
+                <DashboardHeader>
                 <AppLogo>es</AppLogo>
                 <h2>essentialism</h2>
             </DashboardHeader>
-            <FocusTracker focus="1" />
-            <FocusTracker focus="2" />
-            <FocusTracker focus="3" />
+            <FocusTracker type={completed.includes(userFocus[0].name) ? 'completed' : null} focus={userFocus[0].name} />
+            <FocusTracker type={completed.includes(userFocus[1].name) ? 'completed' : null} focus={userFocus[1].name} />
+            <FocusTracker type={completed.includes(userFocus[2].name) ? 'completed' : null} focus={userFocus[2].name} />
         </DashboardContainer>
+        : null
     );
 }
 

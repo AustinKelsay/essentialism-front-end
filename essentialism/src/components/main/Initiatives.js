@@ -37,6 +37,7 @@ const Initiatives = (props) => {
     const [userInitiatives, setUserInitiatives] = useState([]);
     const [userFocus, setUserFocus] = useState();
 
+    
     const dummyData = [
         {
             id: 1,
@@ -85,6 +86,7 @@ const Initiatives = (props) => {
             });
     }, [])
 
+
     const initiativesPost = () => {
         axiosWithAuth()
             .get(`/users/${USERID}/initiatives`)
@@ -122,6 +124,7 @@ const Initiatives = (props) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(formState)
         axiosWithAuth()
         .post(`/users/${USERID}/initiatives`, formState)
             .then(res => {
@@ -141,10 +144,11 @@ const Initiatives = (props) => {
             completed: false,
             repeatable: false
         });
-        window.location.reload(true);
+        //window.location.reload(true);
     }
 
     const handleChange = (e) => {
+        console.log(e.target.value);
         setFormState({
             ...formState,
             [e.target.name]: e.target.value,
@@ -162,7 +166,7 @@ const Initiatives = (props) => {
                         <p>Due: {userInitiatives[i].dueDate}</p>
                         <button
                         onClick={() => {
-                            markComplete(userInitiatives.id);
+                            markComplete(item.id, userFocus[i].name);
                         }}
                         >
                         Mark as complete
@@ -171,11 +175,12 @@ const Initiatives = (props) => {
                 })
     }
 
-    const markComplete = (id) => {
+    const markComplete = (id, focus) => {
         console.log("Task complete!");
         axios.delete(`https://essentialapi.herokuapp.com/users/${USERID}/initiatives/${id}`)
             .then(res => {
                 console.log(res);
+                window.localStorage.setItem(`${focus}`, true)
             })
             .catch(err => {
                 console.log(err);

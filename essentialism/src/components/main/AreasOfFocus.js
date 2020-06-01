@@ -10,13 +10,19 @@ const FocusWrapper = styled.div`
     flex-wrap: wrap;
     justify-content: center;
 `
+const FocusHeader = styled.h1`
+    font-family: 'Vibur', cursive;
+    font-size: 4rem;
+    color: #8FCB9B;
+`;
 
 const AreasOfFocus = (props) => {
+    const USERID = window.localStorage.getItem("userId");
     const [userFocus, setUserFocus] = useState()
 
     useEffect(() => {
         axiosWithAuth()
-        .get(`https://essentialapi.herokuapp.com/users/${props.userId}/focus`)
+        .get(`/users/${USERID}/focus`)
         .then((res) => {
             console.log(res)
             dataParser(res.data)
@@ -41,20 +47,23 @@ const AreasOfFocus = (props) => {
 
     return(
         <div>
-        <h1>Areas of Focus</h1>
+        <FocusHeader>Areas of Focus</FocusHeader>
         {userFocus ?
             <FocusWrapper>
                 <FocusTracker
                     focus={userFocus[0].name}
                     type="area"
+                    importance={userFocus[0].importance}
                     />
                 <FocusTracker
                     focus={userFocus[1].name}
                     type="area"
+                    importance={userFocus[1].importance}
                     />
                 <FocusTracker
                     focus={userFocus[2].name}
                     type="area"
+                    importance={userFocus[2].importance}
                     />
             </FocusWrapper>
             : null}

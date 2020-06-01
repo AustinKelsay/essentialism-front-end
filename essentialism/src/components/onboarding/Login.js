@@ -11,6 +11,7 @@ import axios from "axios";
 
 
 const Login = (props) => {
+    const USERID = window.localStorage.getItem("userId");
     const [formState, setFormState] = useState({
         username: "",
         password: ""
@@ -63,7 +64,6 @@ const Login = (props) => {
              })
              .catch(err => console.log(err))
     }
-    
 
     return (
         <LandingContainer>
